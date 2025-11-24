@@ -32,12 +32,14 @@ addstr:
 
     push dword [ebp+8]  ;1st number push onto stack
     call atoi
-
+    add esp, 4
     mov ebx, eax
 
     push dword [ebp+12]  ;2nd number push onto stack
     call atoi
+    add esp,4
     add eax, ebx    ;eax contains result
+    pop ebx
     mov esp, ebp
     pop ebp
     ret
@@ -49,9 +51,11 @@ is_palindromeASM:
     push ebx
     push DWORD[ebp+8] ; ebp+12 => dword[ebp+8] 
     call strlen ; does not include \0 eax holds string length
+    add esp, 4
     mov edi, DWORD[ebp+8] ; edi = string
     mov esi, edi
     add esi, eax ; end of string
+    dec esi     ; last letter
     mov ecx, eax   ; ecx is total characters remaining in string
     jmp again
 again:
@@ -68,11 +72,13 @@ again:
 test_true:
     xor eax, eax
     add eax, 1
+    pop ebx
     mov esp, ebp
     pop ebp
     ret ;returns 1
 test_false:
     xor eax, eax
+    pop ebx
     mov esp, ebp
     pop ebp
     ret ;returns 0
@@ -88,13 +94,14 @@ factstr:
     add esp, 4
     push eax
     call fact
+    add esp, 4
+    pop ebx
     mov esp, ebp
     pop ebp
     ret
 palindrome_check:
 push ebp
     mov ebp, esp
-
     push ebx
 
     mov ebx, 1
@@ -109,12 +116,16 @@ push ebp
     mov ecx, userstring
     mov edx, 1024
     int 80h
-
-    push ecx
-    call is_palindromeC
-    cmp eax, 1
+    cmp eax,1
     je postive
-    cmp eax, 1
+    dec eax
+    mov byte [userstring+eax],0
+
+    push userstring
+    call is_palindromeC
+    add esp, 4
+    cmp eax, 0
+    je postive
     jne negative
 
 postive:
@@ -123,6 +134,8 @@ postive:
     mov eax, 4
     mov ecx, postiveresult
     mov edx, lenpostiveresult
+    int 80h
+    pop ebx
     mov esp, ebp
     pop ebp
     ret
@@ -133,6 +146,8 @@ negative:
     mov eax, 4
     mov ecx, negativeresult
     mov edx, lennegativeresult
+    int 80h
+    pop ebx
     mov esp, ebp
     pop ebp
     ret
