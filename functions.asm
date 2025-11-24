@@ -20,7 +20,6 @@ lennegativeresult  EQU $ - negativeresult
 
 section .bss
 userstring RESB 1024
-result RESB 1
 
 section .text
 ;add two numbers
@@ -100,7 +99,7 @@ factstr:
     pop ebp
     ret
 palindrome_check:
-push ebp
+    push ebp
     mov ebp, esp
     push ebx
 
@@ -116,18 +115,22 @@ push ebp
     mov ecx, userstring
     mov edx, 1024
     int 80h
-    cmp eax,1
-    je postive
-    dec eax
-    mov byte [userstring+eax],0
+    cmp eax,0
+    jle empty
 
+    dec eax
+    mov byte [userstring + eax],0
+    jmp call_C
+    
+empty:
+    mov byte[userstring],0
+call_C:
     push userstring
     call is_palindromeC
     add esp, 4
-    cmp eax, 0
+    cmp eax, 1
     je postive
     jne negative
-
 postive:
     xor eax,eax
     mov ebx, 1
@@ -135,6 +138,7 @@ postive:
     mov ecx, postiveresult
     mov edx, lenpostiveresult
     int 80h
+
     pop ebx
     mov esp, ebp
     pop ebp
