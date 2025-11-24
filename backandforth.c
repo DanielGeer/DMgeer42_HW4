@@ -17,7 +17,9 @@ extern void palindrome_check();
 int is_palindromeC(char *s){
     int i, j;
     int length = strlen(s);
-    for(i = 0, j = length; i < length/2 ; i++,j--){
+    for(i = 0, j = length; i < j ; i++,j--){
+        printf("%s\n",s[i]);
+        printf("%s\n",s[j]);
         if(s[i] != s[j]){
             return 0;
         }
@@ -44,12 +46,13 @@ int main(){
         printf("Enter another number\n");
         scanf("%s",&user_num2);
         add_result = addstr(user_num1,user_num2);
-        printf("The result is %d\n",result);
+        printf("The result is %d\n",add_result);
     }
     //Check if palindrome C->ASM
     else if (user_choice == 2){
-        printf("Insert a string");
-        fgets(user_string,sizeof(user_string),stdin);
+        printf("Insert a string\n");
+        scanf("%s",user_string);
+        //fgets(user_string,sizeof(user_string),stdin);
         result = is_palindromeASM(user_string);
         if(result == 1){
             printf("It is a palindrome");
@@ -62,6 +65,7 @@ int main(){
         printf("Enter a number\n");
         scanf("%s",&user_num1);
         result = factstr(user_num1);
+        printf("The factorial is: %d\n",result);
     }
     //Print if palidrome ASM->C
     else if (user_choice == 4){
